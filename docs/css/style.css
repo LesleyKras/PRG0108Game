@@ -1,0 +1,64 @@
+body {
+    background-color: #666;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow:hidden;
+    margin:0px; padding:0px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+body * {
+    position: absolute;
+    display: block;
+    margin:0px; padding:0px;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+}
+
+container {
+    width:1000px; height:600px;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    overflow:hidden;
+    background-color: black;
+}
+
+info{
+    width: 200px;
+    height: 600px;
+    float:right;
+    background-color: lightgray;
+    overflow: hidden;
+}
+
+game {
+    width: 800px;
+    height: 600px;
+    background-color: green;
+    position:absolute;
+    bottom:0px;
+    right:0px;
+}
+
+ocean{
+    width: 800px;
+    height: 300px;
+    bottom: 0;
+    background-image: url(../images/game_background.png);
+    background-repeat: no-repeat;
+}
+
+sky{
+    width: 800px;
+    height: 300px;
+    top:0;
+    background-color: lightblue;
+    background-image: url(../images/CavdlYmUMAAHTNd.jpg);
+    background-repeat: repeat;
+}
+
+ship {
+    background-image: url(../images/Pirate_Ship.png);
+    background-repeat: no-repeat;
+    width:100px; height: 100px;
+    bottom: 0;
+}
