@@ -5,6 +5,9 @@ class Controllable implements Behavior{
     constructor(s: Ship){
         this.ship = s;
 
+        // Catch both keydown and keyup events for smooth movement while holding down a key
+
+        // Catch the keydown events to start moving the ship
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
             
@@ -18,6 +21,7 @@ class Controllable implements Behavior{
             }
         })
 
+        // Catch the keyup events to stop moving the ship
         document.addEventListener('keyup', (event) => {
             const keyName = event.key;
             
