@@ -4,33 +4,29 @@ class Controllable implements Behavior{
 
     constructor(s: Ship){
         this.ship = s;
-        document.addEventListener('keypress', (event) => {
+
+        document.addEventListener('keydown', (event) => {
             const keyName = event.key;
             
             if(keyName == 'a'){
-                console.log(this.ship.x);
-                this.ship.directionRight = true;
-                this.ship.x -= this.ship.shipSpeed;
+                this.ship.directionRight = false;
+                this.ship.directionLeft = true;
             }
             if(keyName == 'd'){
-                this.ship.directionRight=false;
-                this.ship.x += this.ship.shipSpeed;
+                this.ship.directionLeft = false;
+                this.ship.directionRight = true;
+            }
+        })
+
+        document.addEventListener('keyup', (event) => {
+            const keyName = event.key;
+            
+            if(keyName == 'a'){
+                this.ship.directionLeft = false;
+            }
+            if(keyName == 'd'){
+                this.ship.directionRight = false;
             }
         })
     }
-
-    private moveLeft(){
-        this.ship.x -= this.ship.shipSpeed;
-    }
-
-    public draw(){
-        if(this.ship.directionRight){
-            this.ship.element.style.transform ="translate("+this.ship.x+"px,"+this.ship.y+"px)";
-        }
-        else{
-            this.ship.element.style.transform ="translate("+this.ship.x+"px,"+this.ship.y+"px) scaleX(-1)";
-        }
-        
-    }
-
 }

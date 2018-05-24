@@ -13,30 +13,27 @@ var Controllable = (function () {
     function Controllable(s) {
         var _this = this;
         this.ship = s;
-        document.addEventListener('keypress', function (event) {
+        document.addEventListener('keydown', function (event) {
             var keyName = event.key;
             if (keyName == 'a') {
-                console.log(_this.ship.x);
+                _this.ship.directionRight = false;
+                _this.ship.directionLeft = true;
+            }
+            if (keyName == 'd') {
+                _this.ship.directionLeft = false;
                 _this.ship.directionRight = true;
-                _this.ship.x -= _this.ship.shipSpeed;
+            }
+        });
+        document.addEventListener('keyup', function (event) {
+            var keyName = event.key;
+            if (keyName == 'a') {
+                _this.ship.directionLeft = false;
             }
             if (keyName == 'd') {
                 _this.ship.directionRight = false;
-                _this.ship.x += _this.ship.shipSpeed;
             }
         });
     }
-    Controllable.prototype.moveLeft = function () {
-        this.ship.x -= this.ship.shipSpeed;
-    };
-    Controllable.prototype.draw = function () {
-        if (this.ship.directionRight) {
-            this.ship.element.style.transform = "translate(" + this.ship.x + "px," + this.ship.y + "px)";
-        }
-        else {
-            this.ship.element.style.transform = "translate(" + this.ship.x + "px," + this.ship.y + "px) scaleX(-1)";
-        }
-    };
     return Controllable;
 }());
 var EventHandler = (function () {
@@ -70,7 +67,7 @@ var Game = (function () {
     };
     Game.prototype.gameLoop = function () {
         var _this = this;
-        this.ship.behaviour.draw();
+        this.ship.update();
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
     Game.prototype.getOcean = function () {
@@ -98,8 +95,9 @@ var Ship = (function (_super) {
     __extends(Ship, _super);
     function Ship() {
         var _this = _super.call(this, 'ship') || this;
-        _this.shipSpeed = 15;
-        _this.directionRight = true;
+        _this.shipSpeed = 10;
+        _this.directionRight = false;
+        _this.directionLeft = false;
         _this.sky = document.getElementById("sky");
         _this.sky.appendChild(_this.element);
         _this.behaviour = new Controllable(_this);
@@ -107,18 +105,22 @@ var Ship = (function (_super) {
     }
     Ship.prototype.update = function () {
         if (this.directionRight) {
-            this.x += this.shipSpeed;
-            if (this.x >= this.sky.clientWidth - this.width) {
+            if (this.x >= this.sky.clientWidth - this.width - 100) {
                 this.directionRight = false;
             }
-            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) scaleX(-1)";
-        }
-        else {
-            this.x -= this.shipSpeed;
-            if (this.x <= 1) {
-                this.directionRight = true;
+            else {
+                this.x += this.shipSpeed;
+                this.element.style.transform = "translateX(" + this.x + "px) scaleX(-1)";
             }
-            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) ";
+        }
+        if (this.directionLeft) {
+            if (this.x <= this.width) {
+                this.directionLeft = false;
+            }
+            else {
+                this.x -= this.shipSpeed;
+                this.element.style.transform = "translateX(" + this.x + "px) scaleX(1)";
+            }
         }
     };
     return Ship;
