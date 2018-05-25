@@ -29,7 +29,7 @@ class Game {
     }
 
     private gameLoop(){
-        this.ship.behaviour.draw();
+        this.ship.update();
         requestAnimationFrame(() => this.gameLoop());
     }
 
