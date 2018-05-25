@@ -13,14 +13,15 @@ var Controllable = (function () {
     function Controllable(s) {
         var _this = this;
         this.ship = s;
-        document.addEventListener('keypress', function (event) {
+        document.addEventListener('keydown', function (event) {
             var keyName = event.key;
-            if (keyName == 'a') {
+            console.log(event.key);
+            if (keyName == 'a' || keyName == 'ArrowLeft') {
                 console.log(_this.ship.x);
                 _this.ship.directionRight = true;
                 _this.ship.x -= _this.ship.shipSpeed;
             }
-            if (keyName == 'd') {
+            if (keyName == 'd' || keyName == 'ArrowRight') {
                 _this.ship.directionRight = false;
                 _this.ship.x += _this.ship.shipSpeed;
             }

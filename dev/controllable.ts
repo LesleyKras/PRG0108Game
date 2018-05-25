@@ -4,15 +4,15 @@ class Controllable implements Behavior{
 
     constructor(s: Ship){
         this.ship = s;
-        document.addEventListener('keypress', (event) => {
+        document.addEventListener('keydown', (event) => {
             const keyName = event.key;
-            
-            if(keyName == 'a'){
+            console.log(event.key)
+            if(keyName == 'a' || keyName == 'ArrowLeft'){
                 console.log(this.ship.x);
                 this.ship.directionRight = true;
                 this.ship.x -= this.ship.shipSpeed;
             }
-            if(keyName == 'd'){
+            if(keyName == 'd' || keyName == 'ArrowRight'){
                 this.ship.directionRight=false;
                 this.ship.x += this.ship.shipSpeed;
             }
