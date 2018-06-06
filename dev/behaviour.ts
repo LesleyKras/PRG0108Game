@@ -1,4 +1,3 @@
-interface Behavior {
+interface iBehaviour {
     ship: Ship;
-    draw():void;
 }

@@ -1,5 +1,5 @@
 class GameObject {
-    x : number = 0;
+    x : number = 400;
     y : number = 0;
     width: number = 0;
     height: number = 0;
@@ -7,6 +7,12 @@ class GameObject {
 
     constructor(name:string){
         this.element = document.createElement(name);
+    }
+
+    update(){}
+
+    public getRectangle() {
+        return this.element.getBoundingClientRect()
     }
 
 }

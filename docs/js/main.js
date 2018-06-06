@@ -15,52 +15,124 @@ var Controllable = (function () {
         this.ship = s;
         document.addEventListener('keydown', function (event) {
             var keyName = event.key;
-            console.log(event.key);
-            if (keyName == 'a' || keyName == 'ArrowLeft') {
-                console.log(_this.ship.x);
-                _this.ship.directionRight = true;
-                _this.ship.x -= _this.ship.shipSpeed;
-            }
-            if (keyName == 'd' || keyName == 'ArrowRight') {
+            if (keyName == 'a') {
                 _this.ship.directionRight = false;
-                _this.ship.x += _this.ship.shipSpeed;
+                _this.ship.directionLeft = true;
+            }
+            if (keyName == 'd') {
+                _this.ship.directionLeft = false;
+                _this.ship.directionRight = true;
+            }
+            if (keyName == 'p') {
+            }
+        });
+        document.addEventListener('keyup', function (event) {
+            var keyName = event.key;
+            if (keyName == 'a') {
+                _this.ship.directionLeft = false;
+            }
+            if (keyName == 'd') {
+                _this.ship.directionRight = false;
+            }
+            if (keyName == 'p') {
+                _this.ship.behaviour = new DropAnchor(_this.ship);
             }
         });
     }
-    Controllable.prototype.moveLeft = function () {
-        this.ship.x -= this.ship.shipSpeed;
-    };
     Controllable.prototype.draw = function () {
-        if (this.ship.directionRight) {
-            this.ship.element.style.transform = "translate(" + this.ship.x + "px," + this.ship.y + "px)";
-        }
-        else {
-            this.ship.element.style.transform = "translate(" + this.ship.x + "px," + this.ship.y + "px) scaleX(-1)";
-        }
     };
     return Controllable;
 }());
-var EventHandler = (function () {
-    function EventHandler() {
-    }
-    EventHandler.RegisterKeyPress = function (input) {
-        document.getElementById(input).addEventListener('keypress', function (e) {
-            console.log(e.keyCode);
+var DropAnchor = (function () {
+    function DropAnchor(s) {
+        var _this = this;
+        this.ship = s;
+        document.addEventListener('keydown', function (event) {
+            var keyName = event.key;
+            if (keyName == 'p' && _this.ship.canShoot) {
+                _this.ship.canShoot = false;
+                _this.fireNet(_this.ship);
+                Game.getInstance().createNet(_this.ship.x + _this.ship.width / 2, _this.ship.y);
+            }
         });
+    }
+    DropAnchor.prototype.fireNet = function (s) {
+        setTimeout(function () {
+            s.canShoot = true;
+        }, 100);
     };
-    return EventHandler;
+    return DropAnchor;
 }());
+var GameObject = (function () {
+    function GameObject(name) {
+        this.x = 400;
+        this.y = 0;
+        this.width = 0;
+        this.height = 0;
+        this.element = document.createElement(name);
+    }
+    GameObject.prototype.update = function () { };
+    GameObject.prototype.getRectangle = function () {
+        return this.element.getBoundingClientRect();
+    };
+    return GameObject;
+}());
+var Fish = (function (_super) {
+    __extends(Fish, _super);
+    function Fish() {
+        var _this = _super.call(this, 'fish') || this;
+        _this.fishSpeed = 5;
+        _this.directionRight = true;
+        _this.width = 40;
+        _this.height = 40;
+        _this.ocean = document.getElementById('ocean');
+        _this.x = Math.floor(Math.random() * _this.ocean.clientWidth) + 1;
+        _this.y = Math.floor(Math.random() * _this.ocean.clientHeight) + 1;
+        console.log(_this.ocean.clientWidth, 'width');
+        console.log(_this.ocean.clientHeight, 'heigth');
+        console.log(_this.x, 'x');
+        console.log(_this.y, 'y');
+        _this.element.style.transform = "translate(" + _this.x + "px," + _this.y + "px)";
+        var url = "url(../docs/images/fish" + (Math.floor(Math.random() * 3) + 1) + ".png)";
+        _this.element.style.backgroundImage = url;
+        _this.element.style.zIndex = '999';
+        _this.ocean.appendChild(_this.element);
+        return _this;
+    }
+    Fish.prototype.update = function () {
+        if (this.directionRight) {
+            this.x += this.fishSpeed;
+            if (this.x >= Game.getInstance().getOcean().clientWidth) {
+                this.directionRight = false;
+            }
+            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px)";
+        }
+        else {
+            this.x -= this.fishSpeed;
+            if (this.x <= 1) {
+                this.directionRight = true;
+            }
+            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) scaleX(-1)";
+        }
+    };
+    return Fish;
+}(GameObject));
 var Game = (function () {
     function Game() {
         var _this = this;
+        this.gameObjectsArray = new Array();
         this.ocean = document.getElementById("ocean");
-        console.log(this.ocean, 'ocean');
-        console.log("new ocean created!");
         this.sky = document.getElementById("sky");
         console.log(this.sky, 'sky');
         console.log("sky created!");
-        this.ship = new Ship;
+        var ship = new Ship();
+        this.gameObjectsArray.push(ship);
         console.log("new ship created");
+        for (var i = 0; i < 3; i++) {
+            var fish = new Fish();
+            this.gameObjectsArray.push(fish);
+        }
+        console.log('fish has been made');
         requestAnimationFrame(function () { return _this.gameLoop(); });
     }
     Game.getInstance = function () {
@@ -71,11 +143,24 @@ var Game = (function () {
     };
     Game.prototype.gameLoop = function () {
         var _this = this;
-        this.ship.behaviour.draw();
+        this.gameObjectsArray.forEach(function (element) {
+            element.update();
+        });
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
     Game.prototype.getOcean = function () {
         return this.ocean;
+    };
+    Game.prototype.createNet = function (x, y) {
+        console.log('created a net at ' + x + 'X-value and Y value: ' + y);
+        var net = new Net(x, y);
+        this.gameObjectsArray.push(net);
+    };
+    Game.prototype.checkCollision = function (a, b) {
+        return (a.left <= b.right &&
+            b.left <= a.right &&
+            a.top <= b.bottom &&
+            b.top <= a.bottom);
     };
     Game.getSky = function () {
         return this.sky;
@@ -84,42 +169,64 @@ var Game = (function () {
 }());
 window.addEventListener("load", function () {
     var g = Game.getInstance();
+    console.log(g);
 });
-var GameObject = (function () {
-    function GameObject(name) {
-        this.x = 0;
-        this.y = 0;
-        this.width = 0;
-        this.height = 0;
-        this.element = document.createElement(name);
+var Net = (function (_super) {
+    __extends(Net, _super);
+    function Net(x, y) {
+        var _this = _super.call(this, 'net') || this;
+        _this.dropSpeed = 3.5;
+        _this.width = 10;
+        _this.height = 10;
+        _this.x = x;
+        _this.y = y;
+        _this.element.style.backgroundColor = "black";
+        _this.element.style.width = _this.width + "px";
+        _this.element.style.height = _this.height + "px";
+        Game.getInstance().getOcean().appendChild(_this.element);
+        console.log(_this.element);
+        return _this;
     }
-    return GameObject;
-}());
+    Net.prototype.update = function () {
+        this.y += this.dropSpeed;
+        this.element.style.transform = "translate(" + this.x + "px," + this.y + "px)";
+    };
+    return Net;
+}(GameObject));
 var Ship = (function (_super) {
     __extends(Ship, _super);
     function Ship() {
         var _this = _super.call(this, 'ship') || this;
-        _this.shipSpeed = 15;
-        _this.directionRight = true;
+        _this.shipSpeed = 10;
+        _this.canShoot = true;
+        _this.directionRight = false;
+        _this.directionLeft = false;
         _this.sky = document.getElementById("sky");
+        _this.width = 100;
+        _this.x = _this.sky.clientWidth - 100;
+        _this.element.style.transform = "translateX(" + _this.x + "px) scaleX(1) rotate(-1deg)";
         _this.sky.appendChild(_this.element);
         _this.behaviour = new Controllable(_this);
         return _this;
     }
     Ship.prototype.update = function () {
         if (this.directionRight) {
-            this.x += this.shipSpeed;
             if (this.x >= this.sky.clientWidth - this.width) {
                 this.directionRight = false;
             }
-            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) scaleX(-1)";
-        }
-        else {
-            this.x -= this.shipSpeed;
-            if (this.x <= 1) {
-                this.directionRight = true;
+            else {
+                this.x += this.shipSpeed;
+                this.element.style.transform = "translateX(" + this.x + "px) scaleX(-1) rotate(1deg)";
             }
-            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) ";
+        }
+        if (this.directionLeft) {
+            if (this.x <= 0) {
+                this.directionLeft = false;
+            }
+            else {
+                this.x -= this.shipSpeed;
+                this.element.style.transform = "translateX(" + this.x + "px) scaleX(1) rotate(-1deg)";
+            }
         }
     };
     return Ship;

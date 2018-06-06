@@ -1,36 +1,48 @@
-class Controllable implements Behavior{
+/// <reference path="behaviour.ts" />
+
+class Controllable implements iBehaviour{
 
     ship:Ship;
 
     constructor(s: Ship){
         this.ship = s;
+
+        // Catch both keydown and keyup events for smooth movement while holding down a key
+
+        // Catch the keydown events to start moving the ship
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
-            console.log(event.key)
-            if(keyName == 'a' || keyName == 'ArrowLeft'){
-                console.log(this.ship.x);
-                this.ship.directionRight = true;
-                this.ship.x -= this.ship.shipSpeed;
+            
+            if(keyName == 'a'){
+                this.ship.directionRight = false;
+                this.ship.directionLeft = true;
             }
-            if(keyName == 'd' || keyName == 'ArrowRight'){
-                this.ship.directionRight=false;
-                this.ship.x += this.ship.shipSpeed;
+            if(keyName == 'd'){
+                this.ship.directionLeft = false;
+                this.ship.directionRight = true;
+            }
+            if(keyName == 'p'){
+            }
+        })
+
+        // Catch the keyup events to stop moving the ship
+        document.addEventListener('keyup', (event) => {
+            const keyName = event.key;
+            
+            if(keyName == 'a'){
+                this.ship.directionLeft = false;
+            }
+            if(keyName == 'd'){
+                this.ship.directionRight = false;
+            }
+            if(keyName == 'p'){
+                this.ship.behaviour = new DropAnchor(this.ship);
             }
         })
     }
 
-    private moveLeft(){
-        this.ship.x -= this.ship.shipSpeed;
-    }
+    public draw():void {
 
-    public draw(){
-        if(this.ship.directionRight){
-            this.ship.element.style.transform ="translate("+this.ship.x+"px,"+this.ship.y+"px)";
-        }
-        else{
-            this.ship.element.style.transform ="translate("+this.ship.x+"px,"+this.ship.y+"px) scaleX(-1)";
-        }
         
     }
-
 }

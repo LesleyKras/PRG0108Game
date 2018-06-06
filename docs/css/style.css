@@ -33,7 +33,6 @@ info{
 game {
     width: 800px;
     height: 600px;
-    background-color: green;
     position:absolute;
     bottom:0px;
     right:0px;
@@ -57,8 +56,15 @@ sky{
 }
 
 ship {
-    background-image: url(../images/Pirate_Ship.png);
+    background-image: url(../images/boat.gif);
     background-repeat: no-repeat;
-    width:100px; height: 100px;
+    width:100px; height: 46px;
     bottom: 0;
+    z-index: 99999;
+}
+
+fish {
+    background-repeat: no-repeat;
+    width:40px; height: 40px;
+    z-index: 99999;
 }
