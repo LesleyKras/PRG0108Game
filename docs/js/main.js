@@ -95,7 +95,6 @@ var Fish = (function (_super) {
         _this.element.style.transform = "translate(" + _this.x + "px," + _this.y + "px)";
         var url = "url(../docs/images/fish" + (Math.floor(Math.random() * 3) + 1) + ".png)";
         _this.element.style.backgroundImage = url;
-        _this.element.style.zIndex = '999';
         _this.ocean.appendChild(_this.element);
         return _this;
     }
