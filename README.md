@@ -21,4 +21,8 @@ https://stud.hosted.hr.nl/0881520/websites/CMGTPRG018/
 
 # Pull Request - Week 4
 
+https://github.com/0909758/PRG08_Bobs_Nightmare/commit/8211faefbef7c0a397fecb0629e7038bd8843092
+
 # Peer review - Week 6
+
+https://github.com/0909758/PRG08_Bobs_Nightmare/issues/5
