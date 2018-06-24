@@ -1,6 +1,6 @@
 /// <reference path="behaviour.ts" />
 
-class DropNet implements iBehaviour {
+class DropNet   {
     ship: Ship;
 
     constructor(s : Ship){

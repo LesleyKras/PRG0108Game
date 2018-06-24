@@ -23,11 +23,45 @@ class Game {
 
     private constructor(){}
 
-    public static getInstance():Game
+    public static getInstance() : Game
     {
         return this._instance || (this._instance = new this());
     }
 }
+
+```
+
+## Strategy Pattern
+De Strategy Pattern heb ik gebruikt in de Ship class. Ik heb dit gebruikt om het gedrag van de boot te veranderen.
+De class Ship heeft een variabele van het type Behaviour. Behaviour is een interface waarin ik de basis functionaliteiten heb beschreven waar gedrag uit moet bestaan. Doordat er een update functie binnen de behaviour interface zit, heeft elk gedragstype dit ook. Voor het updaten van het schip spreek ik dan ook de Ship.behaviour.update().
+Ik verander tussen 2 verschillende gedragstypen binnen Ship; Controllable en FastControllable. Met een toggle op de 'l' toets, kan ik wisselen tussen deze gedragstypen door simpelweg de behaviour variable op het schip te vervangen voor een nieuwe instantie van een gedragstype.
+
+Interface
+```typescript
+interface iBehaviour {
+    ship: Ship;
+    update():void;
+}
+```
+
+Ship
+```typescript
+class Ship extends GameObject{
+    public behaviour: iBehaviour;
+
+    constructor(){
+
+    }
+
+    public update():void{
+        this.behaviour.update();
+    }
+}
+```
+
+## Observer Pattern
+
+```typescript
 
 ```
 

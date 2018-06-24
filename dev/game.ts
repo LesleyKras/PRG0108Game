@@ -10,7 +10,7 @@ class Game {
     private amountOfFish : number;
     private maxFish : number;
     private health : number = 3;
-    private time : number = 10;
+    private time : number = 100;
 
     private constructor(){
         this.gameObjectsArray = new Array();
@@ -121,7 +121,7 @@ class Game {
         this.gameObjectsArray.push(net);
     }
     
-    public static getSky():HTMLElement {
+    public getSky():HTMLElement {
         return this.sky;
     }
       

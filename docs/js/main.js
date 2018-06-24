@@ -9,21 +9,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var Util = (function () {
-    function Util() {
-    }
-    Util.checkCollision = function (a, b) {
-        return (a.left <= b.right &&
-            b.left <= a.right &&
-            a.top <= b.bottom &&
-            b.top <= a.bottom);
-    };
-    return Util;
-}());
-var Controllable = (function () {
-    function Controllable(s) {
+var FastControllable = (function () {
+    function FastControllable(s) {
         var _this = this;
         this.ship = s;
+        this.ship.shipSpeed = 20;
         document.addEventListener('keydown', function (event) {
             var keyName = event.key;
             if (keyName == 'a') {
@@ -46,11 +36,99 @@ var Controllable = (function () {
                 _this.ship.directionRight = false;
             }
             if (keyName == 'p') {
-                _this.ship.behaviour = new DropNet(_this.ship);
+                new DropNet(_this.ship);
+            }
+            if (keyName == 'l') {
+                _this.ship.behaviour = new Controllable(_this.ship);
             }
         });
     }
-    Controllable.prototype.draw = function () {
+    FastControllable.prototype.update = function () {
+        if (this.ship.directionRight) {
+            if (this.ship.x >= Game.getInstance().getSky().clientWidth - this.ship.width) {
+                this.ship.directionRight = false;
+            }
+            else {
+                this.ship.x += this.ship.shipSpeed;
+                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(-1) rotate(1deg)";
+            }
+        }
+        if (this.ship.directionLeft) {
+            if (this.ship.x <= 0) {
+                this.ship.directionLeft = false;
+            }
+            else {
+                this.ship.x -= this.ship.shipSpeed;
+                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(1) rotate(-1deg)";
+            }
+        }
+    };
+    return FastControllable;
+}());
+var Util = (function () {
+    function Util() {
+    }
+    Util.checkCollision = function (a, b) {
+        return (a.left <= b.right &&
+            b.left <= a.right &&
+            a.top <= b.bottom &&
+            b.top <= a.bottom);
+    };
+    return Util;
+}());
+var Controllable = (function () {
+    function Controllable(s) {
+        var _this = this;
+        this.ship = s;
+        this.ship.shipSpeed = 10;
+        document.addEventListener('keydown', function (event) {
+            var keyName = event.key;
+            if (keyName == 'a') {
+                _this.ship.directionRight = false;
+                _this.ship.directionLeft = true;
+            }
+            if (keyName == 'd') {
+                _this.ship.directionLeft = false;
+                _this.ship.directionRight = true;
+            }
+            if (keyName == 'p') {
+            }
+        });
+        document.addEventListener('keyup', function (event) {
+            var keyName = event.key;
+            if (keyName == 'a') {
+                _this.ship.directionLeft = false;
+            }
+            if (keyName == 'd') {
+                _this.ship.directionRight = false;
+            }
+            if (keyName == 'p') {
+                new DropNet(_this.ship);
+            }
+            if (keyName == 'l') {
+                _this.ship.behaviour = new FastControllable(_this.ship);
+            }
+        });
+    }
+    Controllable.prototype.update = function () {
+        if (this.ship.directionRight) {
+            if (this.ship.x >= Game.getInstance().getSky().clientWidth - this.ship.width) {
+                this.ship.directionRight = false;
+            }
+            else {
+                this.ship.x += this.ship.shipSpeed;
+                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(-1) rotate(1deg)";
+            }
+        }
+        if (this.ship.directionLeft) {
+            if (this.ship.x <= 0) {
+                this.ship.directionLeft = false;
+            }
+            else {
+                this.ship.x -= this.ship.shipSpeed;
+                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(1) rotate(-1deg)";
+            }
+        }
     };
     return Controllable;
 }());
@@ -159,7 +237,7 @@ var Game = (function () {
     function Game() {
         var _this = this;
         this.health = 3;
-        this.time = 10;
+        this.time = 100;
         this.gameObjectsArray = new Array();
         this.ocean = document.getElementById("ocean");
         this.sky = document.getElementById("sky");
@@ -248,7 +326,7 @@ var Game = (function () {
         var net = new Net(x, y);
         this.gameObjectsArray.push(net);
     };
-    Game.getSky = function () {
+    Game.prototype.getSky = function () {
         return this.sky;
     };
     return Game;
@@ -300,24 +378,7 @@ var Ship = (function (_super) {
         return _this;
     }
     Ship.prototype.update = function () {
-        if (this.directionRight) {
-            if (this.x >= this.sky.clientWidth - this.width) {
-                this.directionRight = false;
-            }
-            else {
-                this.x += this.shipSpeed;
-                this.element.style.transform = "translateX(" + this.x + "px) scaleX(-1) rotate(1deg)";
-            }
-        }
-        if (this.directionLeft) {
-            if (this.x <= 0) {
-                this.directionLeft = false;
-            }
-            else {
-                this.x -= this.shipSpeed;
-                this.element.style.transform = "translateX(" + this.x + "px) scaleX(1) rotate(-1deg)";
-            }
-        }
+        this.behaviour.update();
     };
     Ship.prototype.getAnchors = function () {
         return this.anchors;

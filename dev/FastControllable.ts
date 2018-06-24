@@ -1,12 +1,12 @@
 /// <reference path="behaviour.ts" />
 
-class Controllable implements iBehaviour{
+class FastControllable implements iBehaviour{
     
     ship:Ship;
 
     constructor(s: Ship){
         this.ship = s;
-        this.ship.shipSpeed = 10;
+        this.ship.shipSpeed = 20;
         // Catch both keydown and keyup events for smooth movement while holding down a key
 
         // Catch the keydown events to start moving the ship
@@ -39,7 +39,7 @@ class Controllable implements iBehaviour{
                 new DropNet(this.ship);
             }
             if(keyName == 'l'){
-                this.ship.behaviour = new FastControllable(this.ship);
+                this.ship.behaviour = new Controllable(this.ship);
             }
         })
     }
