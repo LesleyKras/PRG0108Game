@@ -16,7 +16,7 @@ Run CMD + Shift + b to build the project. Select the tsconfig.json file that's i
 De Singleton Pattern heb is toegepast op de Game Class. Hierdoor ben ik er zeker van dat er altijd maar 1 instantie van de game is, en ik altijd de juiste instantie aanspreek door de getInstance functie.
 Hieronder de singleton zoals ik deze heb toegepast op mijn Game class.
 
-''' typescript
+'''typescript
 
 class Game {
     private static __instance : Game;
