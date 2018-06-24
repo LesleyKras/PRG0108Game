@@ -42,7 +42,7 @@ class Fish extends GameObject{
             this.element.style.transform ="translate("+this.x+"px,"+this.y+"px) scaleX(-1)";
         }
         
-    } 
+    }
     
 
 }

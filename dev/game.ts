@@ -1,9 +1,15 @@
+/// <reference path="interface.ts" />
+
 class Game {
     static sky: any;
     private static _instance: Game;
     private ocean:any;
     private sky:any;
     private gameObjectsArray:Array<GameObject>;
+    private interface:Interface;
+    private amountOfFish : number;
+    private maxFish : number;
+    private health : number = 3;
 
     private constructor(){
         this.gameObjectsArray = new Array();
@@ -16,15 +22,29 @@ class Game {
         console.log("sky created!");
 
         let ship = new Ship();
+        this.interface = new Interface(ship);
         this.gameObjectsArray.push(ship);
         console.log("new ship created");
-
-        for(let i = 0; i < 3; i++){
+        
+        this.amountOfFish = 5;
+        this.maxFish = 10;
+        for(let i =0; i < this.amountOfFish; i++){
             let fish = new Fish();
             this.gameObjectsArray.push(fish);
         }
-        console.log('fish has been made');
+        
+        setInterval(() => {
+            
+            if(this.amountOfFish < this.maxFish){
+                let fish = new Fish();
+                this.amountOfFish += 1;
+                this.gameObjectsArray.push(fish);
+                console.log('fish has been made');
+            }
+            else{console.log('too many fish')}
 
+        },5000);
+        console.log(this.gameObjectsArray)
         requestAnimationFrame(() => this.gameLoop());
     }
     
@@ -37,9 +57,28 @@ class Game {
     }
 
     private gameLoop(){
+        this.interface.draw();
         this.gameObjectsArray.forEach(element => {
             element.update();
+
         });
+
+        this.gameObjectsArray.forEach(elementNet => {
+            if(elementNet instanceof Net){
+                if(elementNet.y > Game.getInstance().getOcean().clientHeight){
+                    elementNet.element.remove();
+                }
+                this.gameObjectsArray.forEach(elementFish => {
+                    if(elementFish instanceof Fish){
+                        if(Util.checkCollision(elementNet.getRectangle(),elementFish.getRectangle())){
+                            elementFish.element.remove();
+                            this.amountOfFish -= 1;
+                            elementNet.element.remove();
+                        };
+                    }
+                });
+            }
+        })
         
         requestAnimationFrame(() => this.gameLoop());
     }
@@ -54,20 +93,11 @@ class Game {
         this.gameObjectsArray.push(net);
     }
     
-    public checkCollision(a: ClientRect, b: ClientRect) {
-        return (a.left <= b.right &&
-            b.left <= a.right &&
-            a.top <= b.bottom &&
-            b.top <= a.bottom)
-     }
-    
     public static getSky():HTMLElement {
         return this.sky;
-    }
-
-    
-    
+    }  
 }
+
 // load
 window.addEventListener("load", function() {
     let g:Game = Game.getInstance();
