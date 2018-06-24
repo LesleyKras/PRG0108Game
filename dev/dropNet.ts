@@ -1,5 +1,3 @@
-/// <reference path="behaviour.ts" />
-
 class DropNet   {
     ship: Ship;
 
@@ -9,9 +7,9 @@ class DropNet   {
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
             
-            if(keyName == 'p' && this.ship.canShoot && this.ship.getAnchors() > 0){
+            if(keyName == 'p' && this.ship.canShoot && this.ship.getNets() > 0){
                 this.ship.canShoot = false;
-                this.ship.setAnchors(-1);
+                this.ship.setNets(-1);
                 this.fireNet(this.ship);
                 Game.getInstance().createNet(this.ship.x + this.ship.width/2,this.ship.y);
             }

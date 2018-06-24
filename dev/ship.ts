@@ -5,7 +5,7 @@
 class Ship extends GameObject{
     public shipSpeed:number = 10;
     public canShoot: boolean = true;
-    private anchors: number = 3;
+    private nets: number = 3;
 
 
     // Use a variable for both directions to get more control over the movement
@@ -24,7 +24,7 @@ class Ship extends GameObject{
         this.sky.appendChild(this.element);
         this.behaviour = new Controllable(this);
         setInterval(() => {
-            this.setAnchors(1);
+            this.setNets(1);
         }, 2000);
     }
     
@@ -32,12 +32,12 @@ class Ship extends GameObject{
         this.behaviour.update();
     }
 
-    public getAnchors():number{
-        return this.anchors;
+    public getNets():number{
+        return this.nets;
     }
 
-    public setAnchors(n : number):void{
-        this.anchors += n;
+    public setNets(n : number):void{
+        this.nets += n;
     }
 
 }

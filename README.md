@@ -10,6 +10,8 @@ run npm install to acquire all the required packages
 Run CMD + Shift + b to build the project. Select the tsconfig.json file that's inside the project folder.
 
 # Class diagram
+![UML](../images/UML.png?raw=true "UML")
+
 
 # Code Snippets + Explanation
 ## Singleton Pattern

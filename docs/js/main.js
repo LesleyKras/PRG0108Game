@@ -138,9 +138,9 @@ var DropNet = (function () {
         this.ship = s;
         document.addEventListener('keydown', function (event) {
             var keyName = event.key;
-            if (keyName == 'p' && _this.ship.canShoot && _this.ship.getAnchors() > 0) {
+            if (keyName == 'p' && _this.ship.canShoot && _this.ship.getNets() > 0) {
                 _this.ship.canShoot = false;
-                _this.ship.setAnchors(-1);
+                _this.ship.setNets(-1);
                 _this.fireNet(_this.ship);
                 Game.getInstance().createNet(_this.ship.x + _this.ship.width / 2, _this.ship.y);
             }
@@ -389,7 +389,7 @@ var Ship = (function (_super) {
         var _this = _super.call(this, 'ship') || this;
         _this.shipSpeed = 10;
         _this.canShoot = true;
-        _this.anchors = 3;
+        _this.nets = 3;
         _this.directionRight = false;
         _this.directionLeft = false;
         _this.sky = document.getElementById("sky");
@@ -399,18 +399,18 @@ var Ship = (function (_super) {
         _this.sky.appendChild(_this.element);
         _this.behaviour = new Controllable(_this);
         setInterval(function () {
-            _this.setAnchors(1);
+            _this.setNets(1);
         }, 2000);
         return _this;
     }
     Ship.prototype.update = function () {
         this.behaviour.update();
     };
-    Ship.prototype.getAnchors = function () {
-        return this.anchors;
+    Ship.prototype.getNets = function () {
+        return this.nets;
     };
-    Ship.prototype.setAnchors = function (n) {
-        this.anchors += n;
+    Ship.prototype.setNets = function (n) {
+        this.nets += n;
     };
     return Ship;
 }(GameObject));
