@@ -17,6 +17,7 @@ De Singleton Pattern heb is toegepast op de Game Class. Hierdoor ben ik er zeker
 Hieronder de singleton zoals ik deze heb toegepast op mijn Game class.
 
 ''' typescript
+
 class Game {
     private static __instance : Game;
 
@@ -27,6 +28,7 @@ class Game {
         return this._instance || (this._instance = new this());
     }
 }
+
 '''
 
 # Gameplay Components
