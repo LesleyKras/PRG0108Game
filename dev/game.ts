@@ -11,26 +11,29 @@ class Game {
     private maxFish : number;
     private health : number = 3;
     private time : number = 100;
+    private killAllFishButton : KillAllFish;
 
     private constructor(){
+        this.killAllFishButton = new KillAllFish();
         this.gameObjectsArray = new Array();
         this.ocean = document.getElementById("ocean");
         // console.log(this.ocean, 'ocean');
         // console.log("new ocean created!");
 
         this.sky = document.getElementById("sky");
-        console.log(this.sky, 'sky');
-        console.log("sky created!");
+        // console.log(this.sky, 'sky');
+        // console.log("sky created!");
 
         let ship = new Ship();
         this.interface = new Interface(ship, this);
         this.gameObjectsArray.push(ship);
-        console.log("new ship created");
+        // console.log("new ship created");
         
         this.amountOfFish = 5;
         this.maxFish = 10;
         for(let i =0; i < this.amountOfFish; i++){
             let fish = new Fish();
+            this.killAllFishButton.RegisterObserver(fish);
             this.gameObjectsArray.push(fish);
         }
 
@@ -43,13 +46,17 @@ class Game {
             if(this.amountOfFish < this.maxFish){
                 let fish = new Fish();
                 this.amountOfFish += 1;
+                this.killAllFishButton.RegisterObserver(fish);
                 this.gameObjectsArray.push(fish);
-                console.log('fish has been made');
+                // console.log('fish has been made');
             }
-            else{console.log('too many fish')}
+            else{
+                // console.log('too many fish');
+            }
 
         },5000);
-        console.log(this.gameObjectsArray)
+
+        // console.log(this.gameObjectsArray)
         requestAnimationFrame(() => this.gameLoop());
     }
     
@@ -60,7 +67,7 @@ class Game {
 
     private gameLoop(){
         if(this.time > 0){
-        console.log(this.amountOfFish, 'amount');
+        // console.log(this.amountOfFish, 'amount');
         this.interface.draw();
         this.gameObjectsArray.forEach(element => {
             element.update();
@@ -76,6 +83,7 @@ class Game {
                     if(elementFish instanceof Fish){
                         if(Util.checkCollision(elementNet.getRectangle() , elementFish.getRectangle())){
                             elementFish.dead();
+                            this.killAllFishButton.RemoveObserver(elementFish);
                             elementNet.element.remove();
                         };
                     }
@@ -116,7 +124,7 @@ class Game {
     }
 
     public createNet(x:number, y:number){
-        console.log('created a net at ' + x + 'X-value and Y value: ' + y);
+        // console.log('created a net at ' + x + 'X-value and Y value: ' + y);
         let net = new Net(x,y);
         this.gameObjectsArray.push(net);
     }
@@ -130,5 +138,5 @@ class Game {
 // load
 window.addEventListener("load", function() {
     let g:Game = Game.getInstance();
-    console.log(g);
+    // console.log(g);
 });

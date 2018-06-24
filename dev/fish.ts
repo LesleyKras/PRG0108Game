@@ -2,8 +2,7 @@
 /// <reference path="behaviour.ts" />
 
 
-class Fish extends GameObject{
-
+class Fish extends GameObject implements IObserver{
     public fishSpeed: number = 5;
     public directionRight: boolean = true;
     private ocean:any;
@@ -16,10 +15,10 @@ class Fish extends GameObject{
         this.ocean = document.getElementById('ocean');
         this.x = Math.floor(Math.random() * this.ocean.clientWidth) + 1 ;
         this.y = Math.floor(Math.random() * this.ocean.clientHeight) + 1 ; //500 max
-        console.log(this.ocean.clientWidth, 'width');
-        console.log(this.ocean.clientHeight, 'heigth');
-        console.log(this.x, 'x');
-        console.log(this.y, 'y');
+        // console.log(this.ocean.clientWidth, 'width');
+        // console.log(this.ocean.clientHeight, 'heigth');
+        // console.log(this.x, 'x');
+        // console.log(this.y, 'y');
         this.element.style.transform ="translate("+this.x+"px,"+this.y+"px)";
         let url = "url(../docs/images/fish"+ (Math.floor(Math.random() * 3) + 1) +".png)";
         this.element.style.backgroundImage = url;
@@ -53,6 +52,12 @@ class Fish extends GameObject{
             this.alive = false;
         }
         
+    }
+
+    ReceiveNotification(): void {
+        if(this.alive){
+            this.dead();
+        }
     }
     
 

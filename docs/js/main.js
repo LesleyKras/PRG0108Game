@@ -155,7 +155,7 @@ var DropNet = (function () {
 }());
 var GameObject = (function () {
     function GameObject(name) {
-        this.x = 400;
+        this.x = 0;
         this.y = 0;
         this.width = 0;
         this.height = 0;
@@ -179,10 +179,6 @@ var Fish = (function (_super) {
         _this.ocean = document.getElementById('ocean');
         _this.x = Math.floor(Math.random() * _this.ocean.clientWidth) + 1;
         _this.y = Math.floor(Math.random() * _this.ocean.clientHeight) + 1;
-        console.log(_this.ocean.clientWidth, 'width');
-        console.log(_this.ocean.clientHeight, 'heigth');
-        console.log(_this.x, 'x');
-        console.log(_this.y, 'y');
         _this.element.style.transform = "translate(" + _this.x + "px," + _this.y + "px)";
         var url = "url(../docs/images/fish" + (Math.floor(Math.random() * 3) + 1) + ".png)";
         _this.element.style.backgroundImage = url;
@@ -213,6 +209,11 @@ var Fish = (function (_super) {
             this.alive = false;
         }
     };
+    Fish.prototype.ReceiveNotification = function () {
+        if (this.alive) {
+            this.dead();
+        }
+    };
     return Fish;
 }(GameObject));
 var Interface = (function () {
@@ -238,19 +239,18 @@ var Game = (function () {
         var _this = this;
         this.health = 3;
         this.time = 100;
+        this.killAllFishButton = new KillAllFish();
         this.gameObjectsArray = new Array();
         this.ocean = document.getElementById("ocean");
         this.sky = document.getElementById("sky");
-        console.log(this.sky, 'sky');
-        console.log("sky created!");
         var ship = new Ship();
         this.interface = new Interface(ship, this);
         this.gameObjectsArray.push(ship);
-        console.log("new ship created");
         this.amountOfFish = 5;
         this.maxFish = 10;
         for (var i = 0; i < this.amountOfFish; i++) {
             var fish = new Fish();
+            this.killAllFishButton.RegisterObserver(fish);
             this.gameObjectsArray.push(fish);
         }
         setInterval(function () {
@@ -260,14 +260,12 @@ var Game = (function () {
             if (_this.amountOfFish < _this.maxFish) {
                 var fish = new Fish();
                 _this.amountOfFish += 1;
+                _this.killAllFishButton.RegisterObserver(fish);
                 _this.gameObjectsArray.push(fish);
-                console.log('fish has been made');
             }
             else {
-                console.log('too many fish');
             }
         }, 5000);
-        console.log(this.gameObjectsArray);
         requestAnimationFrame(function () { return _this.gameLoop(); });
     }
     Game.getInstance = function () {
@@ -276,7 +274,6 @@ var Game = (function () {
     Game.prototype.gameLoop = function () {
         var _this = this;
         if (this.time > 0) {
-            console.log(this.amountOfFish, 'amount');
             this.interface.draw();
             this.gameObjectsArray.forEach(function (element) {
                 element.update();
@@ -290,6 +287,7 @@ var Game = (function () {
                         if (elementFish instanceof Fish) {
                             if (Util.checkCollision(elementNet.getRectangle(), elementFish.getRectangle())) {
                                 elementFish.dead();
+                                _this.killAllFishButton.RemoveObserver(elementFish);
                                 elementNet.element.remove();
                             }
                             ;
@@ -322,7 +320,6 @@ var Game = (function () {
         this.amountOfFish += n;
     };
     Game.prototype.createNet = function (x, y) {
-        console.log('created a net at ' + x + 'X-value and Y value: ' + y);
         var net = new Net(x, y);
         this.gameObjectsArray.push(net);
     };
@@ -333,8 +330,37 @@ var Game = (function () {
 }());
 window.addEventListener("load", function () {
     var g = Game.getInstance();
-    console.log(g);
 });
+var KillAllFish = (function () {
+    function KillAllFish() {
+        var _this = this;
+        this.observers = [];
+        this.amountofClicks = 0;
+        this.button = document.getElementById('killbutton') || document.createElement('killbutton');
+        this.button.innerHTML = "Capture ALL";
+        this.button.addEventListener("click", function (e) {
+            _this.onClick(e);
+        });
+    }
+    KillAllFish.prototype.onClick = function (e) {
+        if (this.amountofClicks < 1) {
+            for (var _i = 0, _a = this.observers; _i < _a.length; _i++) {
+                var observer = _a[_i];
+                observer.ReceiveNotification();
+            }
+            this.amountofClicks += 1;
+            this.button.remove();
+        }
+    };
+    KillAllFish.prototype.RegisterObserver = function (observer) {
+        this.observers.push(observer);
+    };
+    KillAllFish.prototype.RemoveObserver = function (observer) {
+        var index = this.observers.indexOf(observer);
+        this.observers.splice(index, 1);
+    };
+    return KillAllFish;
+}());
 var Net = (function (_super) {
     __extends(Net, _super);
     function Net(x, y) {
