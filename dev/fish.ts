@@ -20,7 +20,7 @@ class Fish extends GameObject implements IObserver{
         // console.log(this.x, 'x');
         // console.log(this.y, 'y');
         this.element.style.transform ="translate("+this.x+"px,"+this.y+"px)";
-        let url = "url(../docs/images/fish"+ (Math.floor(Math.random() * 3) + 1) +".png)";
+        let url = "url(../images/fish"+ (Math.floor(Math.random() * 3) + 1) +".png)";
         this.element.style.backgroundImage = url;
         this.ocean.appendChild(this.element);
     }

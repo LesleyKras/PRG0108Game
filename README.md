@@ -128,7 +128,7 @@ private constructor(){}
 
 # Game can be played here
 
-https://stud.hosted.hr.nl/0881520/websites/CMGTPRG018/
+www.lesleykras.nl
 
 # Pull Request - Week 4
 

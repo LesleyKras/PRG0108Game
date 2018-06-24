@@ -180,7 +180,7 @@ var Fish = (function (_super) {
         _this.x = Math.floor(Math.random() * _this.ocean.clientWidth) + 1;
         _this.y = Math.floor(Math.random() * _this.ocean.clientHeight) + 1;
         _this.element.style.transform = "translate(" + _this.x + "px," + _this.y + "px)";
-        var url = "url(../docs/images/fish" + (Math.floor(Math.random() * 3) + 1) + ".png)";
+        var url = "url(../images/fish" + (Math.floor(Math.random() * 3) + 1) + ".png)";
         _this.element.style.backgroundImage = url;
         _this.ocean.appendChild(_this.element);
         return _this;
