@@ -46,7 +46,7 @@ var Controllable = (function () {
                 _this.ship.directionRight = false;
             }
             if (keyName == 'p') {
-                _this.ship.behaviour = new DropAnchor(_this.ship);
+                _this.ship.behaviour = new DropNet(_this.ship);
             }
         });
     }
@@ -54,8 +54,8 @@ var Controllable = (function () {
     };
     return Controllable;
 }());
-var DropAnchor = (function () {
-    function DropAnchor(s) {
+var DropNet = (function () {
+    function DropNet(s) {
         var _this = this;
         this.ship = s;
         document.addEventListener('keydown', function (event) {
@@ -68,12 +68,12 @@ var DropAnchor = (function () {
             }
         });
     }
-    DropAnchor.prototype.fireNet = function (s) {
+    DropNet.prototype.fireNet = function (s) {
         setTimeout(function () {
             s.canShoot = true;
         }, 10);
     };
-    return DropAnchor;
+    return DropNet;
 }());
 var GameObject = (function () {
     function GameObject(name) {
@@ -131,6 +131,7 @@ var Fish = (function (_super) {
         if (this.alive) {
             this.element.remove();
             Game.getInstance().setTime(5);
+            Game.getInstance().setAmountOfFish(-1);
             this.alive = false;
         }
     };
@@ -158,7 +159,7 @@ var Game = (function () {
     function Game() {
         var _this = this;
         this.health = 3;
-        this.time = 100;
+        this.time = 10;
         this.gameObjectsArray = new Array();
         this.ocean = document.getElementById("ocean");
         this.sky = document.getElementById("sky");
@@ -192,35 +193,34 @@ var Game = (function () {
         requestAnimationFrame(function () { return _this.gameLoop(); });
     }
     Game.getInstance = function () {
-        if (!this._instance) {
-            this._instance = new this();
-        }
-        return this._instance;
+        return this._instance || (this._instance = new this());
     };
     Game.prototype.gameLoop = function () {
         var _this = this;
-        this.interface.draw();
-        this.gameObjectsArray.forEach(function (element) {
-            element.update();
-        });
-        this.gameObjectsArray.forEach(function (elementNet) {
-            if (elementNet instanceof Net) {
-                if (elementNet.y > Game.getInstance().getOcean().clientHeight) {
-                    elementNet.element.remove();
-                }
-                _this.gameObjectsArray.forEach(function (elementFish) {
-                    if (elementFish instanceof Fish) {
-                        if (Util.checkCollision(elementNet.getRectangle(), elementFish.getRectangle())) {
-                            elementFish.dead();
-                            _this.amountOfFish -= 1;
-                            elementNet.element.remove();
-                        }
-                        ;
+        if (this.time > 0) {
+            console.log(this.amountOfFish, 'amount');
+            this.interface.draw();
+            this.gameObjectsArray.forEach(function (element) {
+                element.update();
+            });
+            this.gameObjectsArray.forEach(function (elementNet) {
+                if (elementNet instanceof Net) {
+                    if (elementNet.y > Game.getInstance().getOcean().clientHeight) {
+                        elementNet.element.remove();
                     }
-                });
-            }
-        });
-        requestAnimationFrame(function () { return _this.gameLoop(); });
+                    _this.gameObjectsArray.forEach(function (elementFish) {
+                        if (elementFish instanceof Fish) {
+                            if (Util.checkCollision(elementNet.getRectangle(), elementFish.getRectangle())) {
+                                elementFish.dead();
+                                elementNet.element.remove();
+                            }
+                            ;
+                        }
+                    });
+                }
+            });
+            requestAnimationFrame(function () { return _this.gameLoop(); });
+        }
     };
     Game.prototype.getOcean = function () {
         return this.ocean;
@@ -233,6 +233,15 @@ var Game = (function () {
     };
     Game.prototype.getHealth = function () {
         return this.health;
+    };
+    Game.prototype.setHealth = function (n) {
+        this.health += n;
+    };
+    Game.prototype.getAmountOfFish = function () {
+        return this.amountOfFish;
+    };
+    Game.prototype.setAmountOfFish = function (n) {
+        this.amountOfFish += n;
     };
     Game.prototype.createNet = function (x, y) {
         console.log('created a net at ' + x + 'X-value and Y value: ' + y);

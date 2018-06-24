@@ -49,6 +49,7 @@ class Fish extends GameObject{
         if(this.alive){
             this.element.remove();
             Game.getInstance().setTime(5);
+            Game.getInstance().setAmountOfFish(-1);
             this.alive = false;
         }
         

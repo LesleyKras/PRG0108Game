@@ -36,7 +36,7 @@ class Controllable implements iBehaviour{
                 this.ship.directionRight = false;
             }
             if(keyName == 'p'){
-                this.ship.behaviour = new DropAnchor(this.ship);
+                this.ship.behaviour = new DropNet(this.ship);
             }
         })
     }

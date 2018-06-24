@@ -10,7 +10,7 @@ class Game {
     private amountOfFish : number;
     private maxFish : number;
     private health : number = 3;
-    private time : number = 100;
+    private time : number = 10;
 
     private constructor(){
         this.gameObjectsArray = new Array();
@@ -55,13 +55,12 @@ class Game {
     
     public static getInstance():Game
     {
-       if(!this._instance){
-           this._instance = new this();
-       }
-       return this._instance;
+        return this._instance || (this._instance = new this());
     }
 
     private gameLoop(){
+        if(this.time > 0){
+        console.log(this.amountOfFish, 'amount');
         this.interface.draw();
         this.gameObjectsArray.forEach(element => {
             element.update();
@@ -77,7 +76,6 @@ class Game {
                     if(elementFish instanceof Fish){
                         if(Util.checkCollision(elementNet.getRectangle() , elementFish.getRectangle())){
                             elementFish.dead();
-                            this.amountOfFish -= 1;
                             elementNet.element.remove();
                         };
                     }
@@ -86,6 +84,7 @@ class Game {
         })
         
         requestAnimationFrame(() => this.gameLoop());
+    }
     }
 
     public getOcean():HTMLElement {
@@ -104,6 +103,18 @@ class Game {
         return this.health;
     }
 
+    public setHealth(n : number) {
+        this.health += n;
+    }
+
+    public getAmountOfFish(){
+        return this.amountOfFish;
+    }
+
+    public setAmountOfFish(n : number){
+        this.amountOfFish += n;
+    }
+
     public createNet(x:number, y:number){
         console.log('created a net at ' + x + 'X-value and Y value: ' + y);
         let net = new Net(x,y);
@@ -112,7 +123,8 @@ class Game {
     
     public static getSky():HTMLElement {
         return this.sky;
-    }  
+    }
+      
 }
 
 // load

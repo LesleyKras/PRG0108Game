@@ -1,6 +1,6 @@
 /// <reference path="behaviour.ts" />
 
-class DropAnchor implements iBehaviour {
+class DropNet implements iBehaviour {
     ship: Ship;
 
     constructor(s : Ship){
