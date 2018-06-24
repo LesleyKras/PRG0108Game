@@ -95,6 +95,7 @@ var Fish = (function (_super) {
         var _this = _super.call(this, 'fish') || this;
         _this.fishSpeed = 5;
         _this.directionRight = true;
+        _this.alive = true;
         _this.width = 40;
         _this.height = 40;
         _this.ocean = document.getElementById('ocean');
@@ -126,18 +127,30 @@ var Fish = (function (_super) {
             this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) scaleX(-1)";
         }
     };
+    Fish.prototype.dead = function () {
+        if (this.alive) {
+            this.element.remove();
+            Game.getInstance().setTime(5);
+            this.alive = false;
+        }
+    };
     return Fish;
 }(GameObject));
 var Interface = (function () {
-    function Interface(s) {
+    function Interface(s, g) {
         this.ship = s;
-        this.div = document.getElementById('info');
-        this.ammo = document.createElement('ammo');
+        this.game = g;
+        this.div = document.getElementById('info') || document.createElement('info');
+        this.ammo = document.getElementById('ammo') || document.createElement('ammo');
         this.ammo.innerHTML = s.getAnchors() + 'ammo';
-        this.div.appendChild(this.ammo);
+        this.time = document.getElementById('time') || document.createElement('time');
+        this.time.innerHTML = 'Time: ' + this.game.getTime();
+        this.health = document.getElementById('health') || document.createElement('health');
+        this.health.innerHTML = 'Health: ' + this.game.getHealth();
     }
     Interface.prototype.draw = function () {
-        this.ammo.innerHTML = this.ship.getAnchors() + ' Ammo';
+        this.ammo.innerHTML = 'Ammo :' + this.ship.getAnchors();
+        this.time.innerHTML = 'Time: ' + this.game.getTime();
     };
     return Interface;
 }());
@@ -145,13 +158,14 @@ var Game = (function () {
     function Game() {
         var _this = this;
         this.health = 3;
+        this.time = 100;
         this.gameObjectsArray = new Array();
         this.ocean = document.getElementById("ocean");
         this.sky = document.getElementById("sky");
         console.log(this.sky, 'sky');
         console.log("sky created!");
         var ship = new Ship();
-        this.interface = new Interface(ship);
+        this.interface = new Interface(ship, this);
         this.gameObjectsArray.push(ship);
         console.log("new ship created");
         this.amountOfFish = 5;
@@ -160,6 +174,9 @@ var Game = (function () {
             var fish = new Fish();
             this.gameObjectsArray.push(fish);
         }
+        setInterval(function () {
+            _this.time -= 1;
+        }, 1000);
         setInterval(function () {
             if (_this.amountOfFish < _this.maxFish) {
                 var fish = new Fish();
@@ -175,8 +192,8 @@ var Game = (function () {
         requestAnimationFrame(function () { return _this.gameLoop(); });
     }
     Game.getInstance = function () {
-        if (!Game._instance) {
-            Game._instance = new this();
+        if (!this._instance) {
+            this._instance = new this();
         }
         return this._instance;
     };
@@ -194,7 +211,7 @@ var Game = (function () {
                 _this.gameObjectsArray.forEach(function (elementFish) {
                     if (elementFish instanceof Fish) {
                         if (Util.checkCollision(elementNet.getRectangle(), elementFish.getRectangle())) {
-                            elementFish.element.remove();
+                            elementFish.dead();
                             _this.amountOfFish -= 1;
                             elementNet.element.remove();
                         }
@@ -207,6 +224,15 @@ var Game = (function () {
     };
     Game.prototype.getOcean = function () {
         return this.ocean;
+    };
+    Game.prototype.setTime = function (n) {
+        this.time += n;
+    };
+    Game.prototype.getTime = function () {
+        return this.time;
+    };
+    Game.prototype.getHealth = function () {
+        return this.health;
     };
     Game.prototype.createNet = function (x, y) {
         console.log('created a net at ' + x + 'X-value and Y value: ' + y);

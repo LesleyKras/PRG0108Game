@@ -7,6 +7,7 @@ class Fish extends GameObject{
     public fishSpeed: number = 5;
     public directionRight: boolean = true;
     private ocean:any;
+    private alive : boolean = true;
 
     constructor(){
         super('fish');
@@ -40,6 +41,15 @@ class Fish extends GameObject{
                 this.directionRight = true;
             }
             this.element.style.transform ="translate("+this.x+"px,"+this.y+"px) scaleX(-1)";
+        }
+        
+    }
+
+    public dead():void{
+        if(this.alive){
+            this.element.remove();
+            Game.getInstance().setTime(5);
+            this.alive = false;
         }
         
     }

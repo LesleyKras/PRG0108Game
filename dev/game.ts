@@ -10,6 +10,7 @@ class Game {
     private amountOfFish : number;
     private maxFish : number;
     private health : number = 3;
+    private time : number = 100;
 
     private constructor(){
         this.gameObjectsArray = new Array();
@@ -22,7 +23,7 @@ class Game {
         console.log("sky created!");
 
         let ship = new Ship();
-        this.interface = new Interface(ship);
+        this.interface = new Interface(ship, this);
         this.gameObjectsArray.push(ship);
         console.log("new ship created");
         
@@ -32,6 +33,10 @@ class Game {
             let fish = new Fish();
             this.gameObjectsArray.push(fish);
         }
+
+        setInterval(() => {
+            this.time -=1;
+        },1000)
         
         setInterval(() => {
             
@@ -50,8 +55,8 @@ class Game {
     
     public static getInstance():Game
     {
-       if(!Game._instance){
-           Game._instance = new this();
+       if(!this._instance){
+           this._instance = new this();
        }
        return this._instance;
     }
@@ -70,8 +75,8 @@ class Game {
                 }
                 this.gameObjectsArray.forEach(elementFish => {
                     if(elementFish instanceof Fish){
-                        if(Util.checkCollision(elementNet.getRectangle(),elementFish.getRectangle())){
-                            elementFish.element.remove();
+                        if(Util.checkCollision(elementNet.getRectangle() , elementFish.getRectangle())){
+                            elementFish.dead();
                             this.amountOfFish -= 1;
                             elementNet.element.remove();
                         };
@@ -85,6 +90,18 @@ class Game {
 
     public getOcean():HTMLElement {
         return this.ocean;
+    }
+
+    public setTime(n :number){
+        this.time += n;
+    }
+    
+    public getTime():number{
+        return this.time;
+    }
+
+    public getHealth():number{
+        return this.health;
     }
 
     public createNet(x:number, y:number){
