@@ -1,5 +1,9 @@
 /// <reference path="gameObject.ts" />
 /// <reference path="behaviour.ts" />
+/// <reference path="Swimming.ts" />
+/// <reference path="deadFish.ts" />
+
+
 
 
 class Fish extends GameObject implements IObserver{
@@ -7,6 +11,7 @@ class Fish extends GameObject implements IObserver{
     public directionRight: boolean = true;
     private ocean:any;
     private alive : boolean = true;
+    private behaviour : iBehaviour;
 
     constructor(){
         super('fish');
@@ -19,34 +24,24 @@ class Fish extends GameObject implements IObserver{
         // console.log(this.ocean.clientHeight, 'heigth');
         // console.log(this.x, 'x');
         // console.log(this.y, 'y');
+        let fishType : number = (Math.floor(Math.random() * 3) + 1);
         this.element.style.transform ="translate("+this.x+"px,"+this.y+"px)";
-        let url = "url(../images/fish"+ (Math.floor(Math.random() * 3) + 1) +".png)";
+        let url = "url(images/fish"+ fishType +".png)";
+        this.speed = fishType * 3;
         this.element.style.backgroundImage = url;
         this.ocean.appendChild(this.element);
+        this.behaviour = new Swimming(this);
     }
 
 
     public update():void {
-        if(this.directionRight){
-            this.x += this.fishSpeed;
-            if(this.x >= Game.getInstance().getOcean().clientWidth){
-                this.directionRight = false;
-            }
-            this.element.style.transform ="translate("+this.x+"px,"+this.y+"px)";
-        }
-        else{
-            this.x -= this.fishSpeed;
-            if(this.x <= 1){
-                this.directionRight = true;
-            }
-            this.element.style.transform ="translate("+this.x+"px,"+this.y+"px) scaleX(-1)";
-        }
-        
+        this.behaviour.update();
     }
 
     public dead():void{
         if(this.alive){
-            this.element.remove();
+            console.log('boem');
+            this.behaviour = new deadFish(this);
             Game.getInstance().setTime(5);
             Game.getInstance().setAmountOfFish(-1);
             this.alive = false;

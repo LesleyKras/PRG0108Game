@@ -9,62 +9,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var FastControllable = (function () {
-    function FastControllable(s) {
-        var _this = this;
-        this.ship = s;
-        this.ship.shipSpeed = 20;
-        document.addEventListener('keydown', function (event) {
-            var keyName = event.key;
-            if (keyName == 'a') {
-                _this.ship.directionRight = false;
-                _this.ship.directionLeft = true;
-            }
-            if (keyName == 'd') {
-                _this.ship.directionLeft = false;
-                _this.ship.directionRight = true;
-            }
-            if (keyName == 'p') {
-            }
-        });
-        document.addEventListener('keyup', function (event) {
-            var keyName = event.key;
-            if (keyName == 'a') {
-                _this.ship.directionLeft = false;
-            }
-            if (keyName == 'd') {
-                _this.ship.directionRight = false;
-            }
-            if (keyName == 'p') {
-                new DropNet(_this.ship);
-            }
-            if (keyName == 'l') {
-                _this.ship.behaviour = new Controllable(_this.ship);
-            }
-        });
-    }
-    FastControllable.prototype.update = function () {
-        if (this.ship.directionRight) {
-            if (this.ship.x >= Game.getInstance().getSky().clientWidth - this.ship.width) {
-                this.ship.directionRight = false;
-            }
-            else {
-                this.ship.x += this.ship.shipSpeed;
-                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(-1) rotate(1deg)";
-            }
-        }
-        if (this.ship.directionLeft) {
-            if (this.ship.x <= 0) {
-                this.ship.directionLeft = false;
-            }
-            else {
-                this.ship.x -= this.ship.shipSpeed;
-                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(1) rotate(-1deg)";
-            }
-        }
-    };
-    return FastControllable;
-}());
 var Util = (function () {
     function Util() {
     }
@@ -79,17 +23,17 @@ var Util = (function () {
 var Controllable = (function () {
     function Controllable(s) {
         var _this = this;
-        this.ship = s;
-        this.ship.shipSpeed = 10;
+        this.gameObject = s;
+        var ship = s;
         document.addEventListener('keydown', function (event) {
             var keyName = event.key;
             if (keyName == 'a') {
-                _this.ship.directionRight = false;
-                _this.ship.directionLeft = true;
+                _this.gameObject.directionRight = false;
+                _this.gameObject.directionLeft = true;
             }
             if (keyName == 'd') {
-                _this.ship.directionLeft = false;
-                _this.ship.directionRight = true;
+                _this.gameObject.directionLeft = false;
+                _this.gameObject.directionRight = true;
             }
             if (keyName == 'p') {
             }
@@ -97,40 +41,56 @@ var Controllable = (function () {
         document.addEventListener('keyup', function (event) {
             var keyName = event.key;
             if (keyName == 'a') {
-                _this.ship.directionLeft = false;
+                _this.gameObject.directionLeft = false;
             }
             if (keyName == 'd') {
-                _this.ship.directionRight = false;
+                _this.gameObject.directionRight = false;
             }
             if (keyName == 'p') {
-                new DropNet(_this.ship);
-            }
-            if (keyName == 'l') {
-                _this.ship.behaviour = new FastControllable(_this.ship);
+                new DropNet(ship);
             }
         });
     }
     Controllable.prototype.update = function () {
-        if (this.ship.directionRight) {
-            if (this.ship.x >= Game.getInstance().getSky().clientWidth - this.ship.width) {
-                this.ship.directionRight = false;
+        if (this.gameObject.directionRight) {
+            if (this.gameObject.x >= Game.getInstance().getSky().clientWidth - this.gameObject.width) {
+                this.gameObject.directionRight = false;
             }
             else {
-                this.ship.x += this.ship.shipSpeed;
-                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(-1) rotate(1deg)";
+                this.gameObject.x += this.gameObject.speed;
+                this.gameObject.element.style.transform = "translateX(" + this.gameObject.x + "px) scaleX(-1) rotate(1deg)";
             }
         }
-        if (this.ship.directionLeft) {
-            if (this.ship.x <= 0) {
-                this.ship.directionLeft = false;
+        if (this.gameObject.directionLeft) {
+            if (this.gameObject.x <= 0) {
+                this.gameObject.directionLeft = false;
             }
             else {
-                this.ship.x -= this.ship.shipSpeed;
-                this.ship.element.style.transform = "translateX(" + this.ship.x + "px) scaleX(1) rotate(-1deg)";
+                this.gameObject.x -= this.gameObject.speed;
+                this.gameObject.element.style.transform = "translateX(" + this.gameObject.x + "px) scaleX(1) rotate(-1deg)";
             }
         }
     };
     return Controllable;
+}());
+var deadFish = (function () {
+    function deadFish(f) {
+        this.gameObject = f;
+        this.ocean = document.getElementById('ocean');
+    }
+    deadFish.prototype.update = function () {
+        if (this.gameObject.y > (0 - this.gameObject.height / 2)) {
+            this.gameObject.element.classList.add('img-vert');
+            this.gameObject.element.style.backgroundImage = "url(images/fish_dead.png)";
+            ;
+            this.gameObject.y -= 1;
+            this.gameObject.element.style.transform = "translate(" + this.gameObject.x + "px," + this.gameObject.y + "px) scaleX(-1)";
+        }
+        else {
+            this.gameObject.element.remove();
+        }
+    };
+    return deadFish;
 }());
 var DropNet = (function () {
     function DropNet(s) {
@@ -159,6 +119,9 @@ var GameObject = (function () {
         this.y = 0;
         this.width = 0;
         this.height = 0;
+        this.directionRight = false;
+        this.directionLeft = false;
+        this.speed = 1;
         this.element = document.createElement(name);
     }
     GameObject.prototype.update = function () { };
@@ -166,6 +129,28 @@ var GameObject = (function () {
         return this.element.getBoundingClientRect();
     };
     return GameObject;
+}());
+var Swimming = (function () {
+    function Swimming(f) {
+        this.gameObject = f;
+    }
+    Swimming.prototype.update = function () {
+        if (this.gameObject.directionRight) {
+            this.gameObject.x += this.gameObject.speed;
+            if (this.gameObject.x >= Game.getInstance().getOcean().clientWidth) {
+                this.gameObject.directionRight = false;
+            }
+            this.gameObject.element.style.transform = "translate(" + this.gameObject.x + "px," + this.gameObject.y + "px)";
+        }
+        else {
+            this.gameObject.x -= this.gameObject.speed;
+            if (this.gameObject.x <= 1) {
+                this.gameObject.directionRight = true;
+            }
+            this.gameObject.element.style.transform = "translate(" + this.gameObject.x + "px," + this.gameObject.y + "px) scaleX(-1)";
+        }
+    };
+    return Swimming;
 }());
 var Fish = (function (_super) {
     __extends(Fish, _super);
@@ -179,31 +164,22 @@ var Fish = (function (_super) {
         _this.ocean = document.getElementById('ocean');
         _this.x = Math.floor(Math.random() * _this.ocean.clientWidth) + 1;
         _this.y = Math.floor(Math.random() * _this.ocean.clientHeight) + 1;
+        var fishType = (Math.floor(Math.random() * 3) + 1);
         _this.element.style.transform = "translate(" + _this.x + "px," + _this.y + "px)";
-        var url = "url(../images/fish" + (Math.floor(Math.random() * 3) + 1) + ".png)";
+        var url = "url(images/fish" + fishType + ".png)";
+        _this.speed = fishType * 3;
         _this.element.style.backgroundImage = url;
         _this.ocean.appendChild(_this.element);
+        _this.behaviour = new Swimming(_this);
         return _this;
     }
     Fish.prototype.update = function () {
-        if (this.directionRight) {
-            this.x += this.fishSpeed;
-            if (this.x >= Game.getInstance().getOcean().clientWidth) {
-                this.directionRight = false;
-            }
-            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px)";
-        }
-        else {
-            this.x -= this.fishSpeed;
-            if (this.x <= 1) {
-                this.directionRight = true;
-            }
-            this.element.style.transform = "translate(" + this.x + "px," + this.y + "px) scaleX(-1)";
-        }
+        this.behaviour.update();
     };
     Fish.prototype.dead = function () {
         if (this.alive) {
-            this.element.remove();
+            console.log('boem');
+            this.behaviour = new deadFish(this);
             Game.getInstance().setTime(5);
             Game.getInstance().setAmountOfFish(-1);
             this.alive = false;
@@ -222,14 +198,14 @@ var Interface = (function () {
         this.game = g;
         this.div = document.getElementById('info') || document.createElement('info');
         this.ammo = document.getElementById('ammo') || document.createElement('ammo');
-        this.ammo.innerHTML = s.getAnchors() + 'ammo';
+        this.ammo.innerHTML = s.getNets() + 'ammo';
         this.time = document.getElementById('time') || document.createElement('time');
         this.time.innerHTML = 'Time: ' + this.game.getTime();
         this.health = document.getElementById('health') || document.createElement('health');
         this.health.innerHTML = 'Health: ' + this.game.getHealth();
     }
     Interface.prototype.draw = function () {
-        this.ammo.innerHTML = 'Ammo :' + this.ship.getAnchors();
+        this.ammo.innerHTML = 'Ammo :' + this.ship.getNets();
         this.time.innerHTML = 'Time: ' + this.game.getTime();
     };
     return Interface;
@@ -390,14 +366,15 @@ var Ship = (function (_super) {
         _this.shipSpeed = 10;
         _this.canShoot = true;
         _this.nets = 3;
-        _this.directionRight = false;
-        _this.directionLeft = false;
         _this.sky = document.getElementById("sky");
         _this.width = 100;
+        _this.speed = 10;
         _this.x = _this.sky.clientWidth - 100;
         _this.element.style.transform = "translateX(" + _this.x + "px) scaleX(1) rotate(-1deg)";
         _this.sky.appendChild(_this.element);
         _this.behaviour = new Controllable(_this);
+        _this.directionLeft = false;
+        _this.directionRight = false;
         setInterval(function () {
             _this.setNets(1);
         }, 2000);

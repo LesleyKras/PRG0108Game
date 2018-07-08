@@ -15,7 +15,7 @@ class Interface{
         this.div = document.getElementById('info') || document.createElement('info');
         
         this.ammo = document.getElementById('ammo') || document.createElement('ammo');
-        this.ammo.innerHTML = s.getAnchors() + 'ammo';
+        this.ammo.innerHTML = s.getNets() + 'ammo';
         
         this.time = document.getElementById('time') || document.createElement('time');
         this.time.innerHTML = 'Time: ' + this.game.getTime();
@@ -25,7 +25,7 @@ class Interface{
     }
 
     public draw():void {
-        this.ammo.innerHTML = 'Ammo :' + this.ship.getAnchors();
+        this.ammo.innerHTML = 'Ammo :' + this.ship.getNets();
         this.time.innerHTML = 'Time: ' + this.game.getTime();
 
     }

@@ -1,6 +1,5 @@
 class DropNet   {
-    ship: Ship;
-
+    ship : Ship;
     constructor(s : Ship){
         this.ship = s;
 

@@ -1,4 +1,4 @@
 interface iBehaviour {
-    ship: Ship;
+    gameObject : GameObject;
     update():void;
 }

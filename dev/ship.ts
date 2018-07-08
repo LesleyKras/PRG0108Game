@@ -9,9 +9,6 @@ class Ship extends GameObject{
 
 
     // Use a variable for both directions to get more control over the movement
-    public directionRight : boolean = false;
-    public directionLeft : boolean = false;
-
     private sky : any;
     public behaviour: iBehaviour;
 
@@ -19,10 +16,13 @@ class Ship extends GameObject{
         super('ship');
         this.sky = document.getElementById("sky");
         this.width = 100;
+        this.speed = 10;
         this.x = this.sky.clientWidth - 100;
         this.element.style.transform ="translateX("+this.x+"px) scaleX(1) rotate(-1deg)";
         this.sky.appendChild(this.element);
         this.behaviour = new Controllable(this);
+        this.directionLeft = false;
+        this.directionRight = false;
         setInterval(() => {
             this.setNets(1);
         }, 2000);

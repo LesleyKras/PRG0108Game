@@ -2,11 +2,11 @@
 
 class Controllable implements iBehaviour{
     
-    ship:Ship;
+    gameObject : GameObject;
 
     constructor(s: Ship){
-        this.ship = s;
-        this.ship.shipSpeed = 10;
+        this.gameObject = s;
+        let ship : Ship = s;
         // Catch both keydown and keyup events for smooth movement while holding down a key
 
         // Catch the keydown events to start moving the ship
@@ -14,12 +14,12 @@ class Controllable implements iBehaviour{
             const keyName = event.key;
             
             if(keyName == 'a'){
-                this.ship.directionRight = false;
-                this.ship.directionLeft = true;
+                this.gameObject.directionRight = false;
+                this.gameObject.directionLeft = true;
             }
             if(keyName == 'd'){
-                this.ship.directionLeft = false;
-                this.ship.directionRight = true;
+                this.gameObject.directionLeft = false;
+                this.gameObject.directionRight = true;
             }
             if(keyName == 'p'){
             }
@@ -30,45 +30,42 @@ class Controllable implements iBehaviour{
             const keyName = event.key;
             
             if(keyName == 'a'){
-                this.ship.directionLeft = false;
+                this.gameObject.directionLeft = false;
             }
             if(keyName == 'd'){
-                this.ship.directionRight = false;
+                this.gameObject.directionRight = false;
             }
             if(keyName == 'p'){
-                new DropNet(this.ship);
-            }
-            if(keyName == 'l'){
-                this.ship.behaviour = new FastControllable(this.ship);
+                new DropNet(ship);
             }
         })
     }
 
     update(): void {
-        if(this.ship.directionRight){
+        if(this.gameObject.directionRight){
             // Added/updated check for right border of screen
-            if(this.ship.x >= Game.getInstance().getSky().clientWidth - this.ship.width){
+            if(this.gameObject.x >= Game.getInstance().getSky().clientWidth - this.gameObject.width){
                 // Stop moving right (left is still possible)
-                this.ship.directionRight = false;
+                this.gameObject.directionRight = false;
             }
             else {
-                this.ship.x += this.ship.shipSpeed;
+                this.gameObject.x += this.gameObject.speed;
 
                 // Only change X position of the ship
-                this.ship.element.style.transform ="translateX("+this.ship.x+"px) scaleX(-1) rotate(1deg)";
+                this.gameObject.element.style.transform ="translateX("+this.gameObject.x+"px) scaleX(-1) rotate(1deg)";
             }
         }
-        if(this.ship.directionLeft){
+        if(this.gameObject.directionLeft){
             // Added/updated check for left border of screen
-            if(this.ship.x <= 0){
+            if(this.gameObject.x <= 0){
                 // Stop moving left (right is still possible)
-                this.ship.directionLeft = false;
+                this.gameObject.directionLeft = false;
             }
             else {
-                this.ship.x -= this.ship.shipSpeed;
+                this.gameObject.x -= this.gameObject.speed;
 
                 // Only change X position of the ship
-                this.ship.element.style.transform ="translateX("+this.ship.x+"px) scaleX(1) rotate(-1deg)";
+                this.gameObject.element.style.transform ="translateX("+this.gameObject.x+"px) scaleX(1) rotate(-1deg)";
             }
         }
     }

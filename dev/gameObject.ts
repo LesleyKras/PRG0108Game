@@ -4,6 +4,9 @@ class GameObject {
     width: number = 0;
     height: number = 0;
     element : HTMLElement;
+    directionRight : boolean = false;
+    directionLeft : boolean = false;
+    speed : number = 1;
 
     constructor(name:string){
         this.element = document.createElement(name);
