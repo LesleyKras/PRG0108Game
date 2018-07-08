@@ -9,7 +9,7 @@ class deadFish implements iBehaviour {
         if(this.gameObject.y > (0 - this.gameObject.height / 2))
         {
         this.gameObject.element.classList.add('img-vert');
-        this.gameObject.element.style.backgroundImage = "url(images/fish_dead.png)";;
+        this.gameObject.element.style.backgroundImage = "url(../images/fish_dead.png)";;
         this.gameObject.y -=1;
         this.gameObject.element.style.transform ="translate("+this.gameObject.x+"px,"+this.gameObject.y+"px) scaleX(-1)";
         }

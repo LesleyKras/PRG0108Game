@@ -81,7 +81,7 @@ var deadFish = (function () {
     deadFish.prototype.update = function () {
         if (this.gameObject.y > (0 - this.gameObject.height / 2)) {
             this.gameObject.element.classList.add('img-vert');
-            this.gameObject.element.style.backgroundImage = "url(images/fish_dead.png)";
+            this.gameObject.element.style.backgroundImage = "url(../images/fish_dead.png)";
             ;
             this.gameObject.y -= 1;
             this.gameObject.element.style.transform = "translate(" + this.gameObject.x + "px," + this.gameObject.y + "px) scaleX(-1)";
@@ -166,7 +166,7 @@ var Fish = (function (_super) {
         _this.y = Math.floor(Math.random() * _this.ocean.clientHeight) + 1;
         var fishType = (Math.floor(Math.random() * 3) + 1);
         _this.element.style.transform = "translate(" + _this.x + "px," + _this.y + "px)";
-        var url = "url(images/fish" + fishType + ".png)";
+        var url = "url(../images/fish" + fishType + ".png)";
         _this.speed = fishType * 3;
         _this.element.style.backgroundImage = url;
         _this.ocean.appendChild(_this.element);

@@ -34,25 +34,32 @@ class Game {
 ```
 
 ## Strategy Pattern
-De Strategy Pattern heb ik gebruikt in de Ship class. Ik heb dit gebruikt om het gedrag van de boot te veranderen.
-De class Ship heeft een variabele van het type Behaviour. Behaviour is een interface waarin ik de basis functionaliteiten heb beschreven waar gedrag uit moet bestaan. Doordat er een update functie binnen de behaviour interface zit, heeft elk gedragstype dit ook. Voor het updaten van het schip spreek ik dan ook de Ship.behaviour.update().
-Ik verander tussen 2 verschillende gedragstypen binnen Ship; Controllable en FastControllable. Met een toggle op de 'l' toets, kan ik wisselen tussen deze gedragstypen door simpelweg de behaviour variable op het schip te vervangen voor een nieuwe instantie van een gedragstype.
+De Strategy Pattern is toegepast op de vissen. Voor de strategy pattern heb ik 2 nieuwe gedragstypen gemaakt; Swimming en deadFish(). Deze implementeren beide de iBehaviour interface zodat deze als 'behaviour' parameter kan worden meegeven voor het gedrag van de vis.
+
+In de Swimming Class staat de code geschreven waardoor de vis van links naar rechts zwemt.
+In de deadFish Class staat de functionaliteit beschreven als de vis dood gaat, dan drijft hij naar boven en veranderd de afbeelding naar een dode vis.
+
+Doordat beide gedragstypen de interface implementeren beschikken zij beide over een update() functie. Hierdoor kan ik deze gemakkelijk aanspreken in de update functie van de GameObject zelf. Welke weer wordt aangesproken in de gameloop.
+
+Hierdoor kan ik dus heel makkelijk het gedrag veranderen van de vis, door simpelweg de inhoud van de 'behaviour' parameter te vervangen voor een andere class die voldoet aan de iBehvaiour interface.
+
+
 
 Interface
 ```typescript
 interface iBehaviour {
-    ship: Ship;
+    gameObject: GameObject;
     update():void;
 }
 ```
 
-Ship
+Fish
 ```typescript
-class Ship extends GameObject{
+class Fish extends GameObject{
     public behaviour: iBehaviour;
 
     constructor(){
-        super('ship');
+        super('fish');
     }
 
     public update():void{

@@ -26,7 +26,7 @@ class Fish extends GameObject implements IObserver{
         // console.log(this.y, 'y');
         let fishType : number = (Math.floor(Math.random() * 3) + 1);
         this.element.style.transform ="translate("+this.x+"px,"+this.y+"px)";
-        let url = "url(images/fish"+ fishType +".png)";
+        let url = "url(../images/fish"+ fishType +".png)";
         this.speed = fishType * 3;
         this.element.style.backgroundImage = url;
         this.ocean.appendChild(this.element);
